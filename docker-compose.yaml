@@ -3,16 +3,20 @@ services:
   go:
     build: 
       dockerfile: ./api/Dockerfile
+    container_name: go-api
     tty: true
     ports:
-        - "8080:8080"
+      - "8080:8080"
+    links:
+      - db
     volumes:
-        - ./api:/api
+      - ./api:/api
     networks:
       - app-net
 
   db:
     image: mysql:5.7
+    container_name: db
     platform: linux/amd64
     hostname: mysql
     volumes:
