@@ -12,16 +12,13 @@ func main() {
 }
 
 func getBread(c *gin.Context) {
-	var message string
-
 	bread, err := db.GetBreadName()
 	if err != nil {
-		message = err.Error()
-	} else {
-		message = bread.Name
+		c.String(500, "Server Error")
+		return
 	}
 
 	c.JSON(200, gin.H{
-		"message": message,
+		"message": bread.Name,
 	})
 }
