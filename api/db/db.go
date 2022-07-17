@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -13,7 +14,7 @@ type Bread struct {
 	CreatedAt time.Time `db:"created_at"`
 }
 
-func GetBreadName() (*Bread, error) {
+func GetBread(id int) (*Bread, error) {
 	db, err := sqlx.Open("mysql", "go_test:password@tcp(db:3306)/go_database?parseTime=true")
 	defer db.Close()
 	if err != nil {
@@ -21,7 +22,8 @@ func GetBreadName() (*Bread, error) {
 	}
 
 	var bread Bread
-	if err := db.Get(&bread, "SELECT * FROM bread WHERE id = ?", 1); err != nil {
+	err = db.Get(&bread, "SELECT * FROM bread WHERE id = ?", id)
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
