@@ -17,12 +17,14 @@ func main() {
 func getBreadName(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		log.Println(err)
 		c.String(http.StatusBadRequest, "Bad Request")
 		return
 	}
 
 	bread, err := db.GetBread(id)
 	if err != nil {
+		log.Println(err)
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
 	}
