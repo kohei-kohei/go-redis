@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/kohei-kohei/go-redis/cache"
 	"github.com/kohei-kohei/go-redis/db"
 )
 
@@ -27,6 +31,11 @@ func getBreadName(c *gin.Context) {
 		log.Println(err)
 		c.String(http.StatusInternalServerError, "Server Error")
 		return
+	}
+
+	key := fmt.Sprintf("BreadID:%d", id)
+	if err := cache.Set(c, key, bread.Name); err != nil {
+		log.Println(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
