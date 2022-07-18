@@ -23,7 +23,9 @@ func GetBread(id int) (*Bread, error) {
 
 	var bread Bread
 	err = db.Get(&bread, "SELECT * FROM bread WHERE id = ?", id)
-	if err != nil && err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 

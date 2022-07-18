@@ -9,6 +9,7 @@ services:
       - "8080:8080"
     links:
       - db
+      - redis
     volumes:
       - ./api:/api
     networks:
@@ -30,6 +31,14 @@ services:
       TZ: Asia/Tokyo
     ports:
       - 13306:3306
+    networks:
+      - app-net
+
+  redis:
+    image: redis:6.2.7-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
     networks:
       - app-net
 
