@@ -33,6 +33,11 @@ func getBreadName(c *gin.Context) {
 		return
 	}
 
+	if bread == nil {
+		c.String(http.StatusNotFound, "Not Found")
+		return
+	}
+
 	key := fmt.Sprintf("BreadID:%d", id)
 	if err := cache.Set(c, key, bread.Name); err != nil {
 		log.Println(err)
