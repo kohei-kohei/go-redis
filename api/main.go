@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -26,6 +27,23 @@ func getBreadName(c *gin.Context) {
 		return
 	}
 
+	key := fmt.Sprintf("BreadID:%d", id)
+	value, err := cache.Get(c, key)
+	if err != nil {
+		log.Println(err)
+		c.String(http.StatusInternalServerError, "Server Error")
+		return
+	}
+
+	if value != "" {
+		c.JSON(http.StatusOK, gin.H{
+			"bread": value,
+		})
+		return
+	}
+
+	time.Sleep(time.Second * 3)
+
 	bread, err := db.GetBread(id)
 	if err != nil {
 		log.Println(err)
@@ -38,12 +56,11 @@ func getBreadName(c *gin.Context) {
 		return
 	}
 
-	key := fmt.Sprintf("BreadID:%d", id)
 	if err := cache.Set(c, key, bread.Name); err != nil {
 		log.Println(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": bread.Name,
+		"bread": bread.Name,
 	})
 }
