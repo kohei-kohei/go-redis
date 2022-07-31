@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/kohei-kohei/go-redis/cache"
 	"github.com/kohei-kohei/go-redis/db"
+	"github.com/kohei-kohei/go-redis/domain"
 )
 
 func main() {
@@ -36,6 +38,8 @@ func getBreadName(c *gin.Context) {
 	}
 
 	if value != "" {
+		b := domain.Bread{}
+		json.Unmarshal([]byte(value), &b)
 		c.JSON(http.StatusOK, gin.H{
 			"bread": value,
 		})
@@ -56,7 +60,8 @@ func getBreadName(c *gin.Context) {
 		return
 	}
 
-	if err := cache.Set(c, key, bread.Name); err != nil {
+	serialized, _ := json.Marshal(bread)
+	if err := cache.Set(c, key, string(serialized)); err != nil {
 		log.Println(err)
 	}
 
