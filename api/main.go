@@ -40,7 +40,6 @@ func getBreadName(c *gin.Context) {
 	if value != "" {
 		b := domain.Bread{}
 		json.Unmarshal([]byte(value), &b)
-		fmt.Print(b)
 		c.JSON(http.StatusOK, gin.H{
 			"bread": value,
 		})
